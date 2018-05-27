@@ -31,7 +31,11 @@ str_ary.each do |item|
 	end
 
 	# 行数取得。25行を超える場合、改ページ
-	linesize = (item.size / 24) + 1
+	if item.size % 24 == 0
+		linesize = item.size / 24
+	else
+		linesize = (item.size / 24) + 1
+	end
 	if line_no + linesize > 25
 		puts "</p>"
 		puts "</div>"
@@ -46,9 +50,12 @@ str_ary.each do |item|
 	if paragraph_flag == true
 	  # パラグラフ変更直後->下線を引く
 		puts "<u>#{item}</u><br />"
-	else
+	elsif item[0] == "・"
 	  # その他->普通に出力
 		puts "#{item}<br />"
+	else
+	  # その他->普通に出力
+		puts "　#{item}<br />"
 	end
 
 	paragraph_flag = false
