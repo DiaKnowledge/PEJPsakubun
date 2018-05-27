@@ -33,12 +33,13 @@ str_ary.each do |item|
 	# 行数取得。25行を超える場合、改ページ
 	linesize = (item.size / 24) + 1
 	if line_no + linesize > 25
-		line_no = 0
 		puts "</p>"
 		puts "</div>"
+		puts "(#{line_no}/25)行"
 		puts "<hr />"
 		puts "<div class=\"sakubun\">"
 		puts "<p>"
+		line_no = 0
 	end
 	line_no = line_no + linesize
 
@@ -52,3 +53,6 @@ str_ary.each do |item|
 
 	paragraph_flag = false
 end
+puts "</p>"
+puts "</div>"
+puts "(#{line_no}/25)行"
