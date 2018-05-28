@@ -10,13 +10,13 @@ Safari(Mac), IE9(Windows 7), Firefox(Windows7), Chrome(Windows 7)
 にて動作確認済みです。
 
 # PEJPsakubun 回答作成手順
-(1) data/以下に「Hnn-X-Y-Z.txt」を作成する。
+(1) Hnn_base.htmlを作成する。回答については、行の先頭に%を入れて、データファイル名を記入する。
 
 nn: 平成何年か
 
+(2) data/以下に「Hnn-X-Y-Z.txt」を作成する。
+
 X-Y-Z: どの問題か
 
-(2) ruby src/txt2html.rb data/Hnn-X-Y-Z.txtを実行し、HTMLを生成
-
-(3) 生成したHTMLをhtmlファイルに転記する
+(3) 「./create_html.sh Hnn」にて、HTMLファイルを作成する。
 

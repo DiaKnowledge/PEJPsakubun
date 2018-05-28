@@ -1,5 +1,6 @@
-# txtファイルを読み込み、
-# 技術士回答HTMLを出力するスクリプト
+# HTMLベースファイルを読み込み、その中にある
+# ％から始まる行については、dataフォルダ内の
+# txtファイルからHTMLを生成する。
 # 原稿用紙は24*25
 
 class GenkoString < String
@@ -16,9 +17,9 @@ end
 
 class HTMLArray < Array
   ROW = 25
-  def create_html
+  def create_html(output_file)
     # HTML出力
-    html_outputer = HTMLOutputer.new
+    html_outputer = HTMLOutputer.new(output_file)
     html_outputer.start_genko
     html_outputer.start_paragraph
 
@@ -38,7 +39,7 @@ class HTMLArray < Array
       if line_no + item.linesize > ROW
         html_outputer.end_paragraph
         html_outputer.end_genko
-        puts "P#{page_no}(#{line_no}/#{ROW})行"
+        output_file.puts "P#{page_no}(#{line_no}/#{ROW})行"
         html_outputer.separate
         html_outputer.start_genko
         html_outputer.start_paragraph
@@ -62,56 +63,74 @@ class HTMLArray < Array
     end
     html_outputer.end_paragraph
     html_outputer.end_genko
-    puts "P#{page_no}(#{line_no}/#{ROW})行"
+    output_file.puts "P#{page_no}(#{line_no}/#{ROW})行"
   end
 end
 
 class HTMLOutputer
-  def initialize
+  def initialize(o)
+    @out = o
   end
   def start_genko
-    puts "<div class=\"sakubun\">"
+    @out.puts "<div class=\"sakubun\">"
   end
   def start_paragraph
-    puts "<p>"
+    @out.puts "<p>"
   end
   def end_genko
-    puts "</div>"
+    @out.puts "</div>"
   end
   def end_paragraph
-    puts "</p>"
+    @out.puts "</p>"
   end
   def separate
-    puts "<hr />"
+    @out.puts "<hr />"
   end
   def title(item)
-    puts "<u>#{item}</u><br />"
+    @out.puts "<u>#{item}</u><br />"
   end
   def list(item)
-    puts "#{item}<br />"
+    @out.puts "#{item}<br />"
   end
   def str(item)
-    puts "　#{item}<br />"
+    @out.puts "　#{item}<br />"
   end
+end
+
+def txt2data(filename, output_file)
+  puts filename
+  # txtファイル読み込み
+  ary = HTMLArray.new
+  open(filename) do |file|
+    file.each do |line|
+      # 先頭#はコメントとみなす
+      if line[0] == "#"
+        next
+      end
+      ary << GenkoString.new(line.chomp)
+    end
+  end
+
+  # HTML文字列出力
+  ary.create_html(output_file)
 end
 
 # 引数チェック
-if ARGV[0] == nil
-  raise "ARGS ERROR: ARGV[0] -> csv file name"
+if ARGV[1] == nil
+  raise "ARGS ERROR: ARGV[0]->input_HTML_base ARGV[1]->output_HTML"
 end
 
-# txtファイル読み込み
-ary = HTMLArray.new
-open(ARGV[0]) do |file|
-  file.each do |line|
-    # 先頭#はコメントとみなす
-    if line[0] == "#"
-      next
+open(ARGV[0]) do |input_file|
+  open(ARGV[1], "w") do |output_file|
+    input_file.each do |line|
+      # 先頭%の場合、dataフォルダ内のtxtファイルから
+      # HTMLを生成する。
+      if line[0] == "%"
+        txt2data(line[1..-1].chomp, output_file)
+        next
+      end
+      output_file.puts line.chomp
     end
-    ary << GenkoString.new(line.chomp)
   end
 end
-
-# HTML文字列出力
-ary.create_html
 
