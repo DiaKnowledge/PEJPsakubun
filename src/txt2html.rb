@@ -22,6 +22,7 @@ class HTMLArray < Array
 
     paragraph_flag = true
     line_no = 0
+    page_no = 1
     self.each do |item|
       # 空行 -> パラグラフ変更
       if item == ""
@@ -35,11 +36,12 @@ class HTMLArray < Array
       if line_no + item.linesize > 25
         html_outputer.end_paragraph
         html_outputer.end_genko
-        puts "(#{line_no}/25)行"
+        puts "P#{page_no}(#{line_no}/25)行"
         html_outputer.separate
         html_outputer.start_genko
         html_outputer.start_paragraph
         line_no = 0
+        page_no = page_no + 1
       end
       line_no = line_no + item.linesize
 
@@ -58,7 +60,7 @@ class HTMLArray < Array
     end
     html_outputer.end_paragraph
     html_outputer.end_genko
-    puts "(#{line_no}/25)行"
+    puts "P#{page_no}(#{line_no}/25)行"
   end
 end
 
