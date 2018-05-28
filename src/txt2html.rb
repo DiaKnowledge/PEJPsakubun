@@ -98,17 +98,21 @@ class HTMLOutputer
 end
 
 def txt2data(filename, output_file)
-  puts filename
+  puts "[txt2data]" + filename
   # txtファイル読み込み
   ary = HTMLArray.new
-  open(filename) do |file|
-    file.each do |line|
-      # 先頭#はコメントとみなす
-      if line[0] == "#"
-        next
+  begin
+    open(filename) do |file|
+      file.each do |line|
+        # 先頭#はコメントとみなす
+        if line[0] == "#"
+          next
+        end
+        ary << GenkoString.new(line.chomp)
       end
-      ary << GenkoString.new(line.chomp)
     end
+  rescue
+    puts "[WARNING] txt2data失敗"
   end
 
   # HTML文字列出力
