@@ -3,17 +3,19 @@
 # 原稿用紙は24*25
 
 class GenkoString < String
+  COLUMN = 24
   def linesize
-    if self.size % 24 == 0
-      linesize = self.size / 24
+    if self.size % COLUMN == 0
+      linesize = self.size / COLUMN
     else
-      linesize = (self.size / 24) + 1
+      linesize = (self.size / COLUMN) + 1
     end
     linesize
   end
 end
 
 class HTMLArray < Array
+  ROW = 25
   def create_html
     # HTML出力
     html_outputer = HTMLOutputer.new
@@ -33,10 +35,10 @@ class HTMLArray < Array
       end
 
       # 行数取得。25行を超える場合、改ページ
-      if line_no + item.linesize > 25
+      if line_no + item.linesize > ROW
         html_outputer.end_paragraph
         html_outputer.end_genko
-        puts "P#{page_no}(#{line_no}/25)行"
+        puts "P#{page_no}(#{line_no}/#{ROW})行"
         html_outputer.separate
         html_outputer.start_genko
         html_outputer.start_paragraph
@@ -60,7 +62,7 @@ class HTMLArray < Array
     end
     html_outputer.end_paragraph
     html_outputer.end_genko
-    puts "P#{page_no}(#{line_no}/25)行"
+    puts "P#{page_no}(#{line_no}/#{ROW})行"
   end
 end
 
