@@ -3,20 +3,24 @@
 # txtファイルからHTMLを生成する。
 # 原稿用紙は24*25
 
+# 原稿用紙に記載する文字列を格納するクラス
 class GenkoString < String
   COLUMN = 24
+
   def linesize
-    if self.size % COLUMN == 0
-      linesize = self.size / COLUMN
+    if (size % COLUMN).zero?
+      linesize = size / COLUMN
     else
-      linesize = (self.size / COLUMN) + 1
+      linesize = (size / COLUMN) + 1
     end
     linesize
   end
 end
 
+# HTML化する要素を格納する配列クラス
 class HTMLArray < Array
   ROW = 25
+
   def create_html(output_file)
     # HTML出力
     html_outputer = HTMLOutputer.new(output_file)
@@ -44,9 +48,9 @@ class HTMLArray < Array
         html_outputer.start_genko
         html_outputer.start_paragraph
         line_no = 0
-        page_no = page_no + 1
+        page_no += 1
       end
-      line_no = line_no + item.linesize
+      line_no += item.linesize
 
       if paragraph_flag == true
         # パラグラフ変更直後->下線を引く
@@ -67,31 +71,40 @@ class HTMLArray < Array
   end
 end
 
+# HTML出力クラス
 class HTMLOutputer
-  def initialize(o)
-    @out = o
+  def initialize(output_file)
+    @out = output_file
   end
+
   def start_genko
     @out.puts "<div class=\"sakubun\">"
   end
+
   def start_paragraph
     @out.puts "<p>"
   end
+
   def end_genko
     @out.puts "</div>"
   end
+
   def end_paragraph
     @out.puts "</p>"
   end
+
   def separate
     @out.puts "<hr />"
   end
+
   def title(item)
     @out.puts "<u>#{item}</u><br />"
   end
+
   def list(item)
     @out.puts "#{item}<br />"
   end
+
   def str(item)
     @out.puts "　#{item}<br />"
   end
@@ -120,7 +133,7 @@ def txt2data(filename, output_file)
 end
 
 # 引数チェック
-if ARGV[1] == nil
+if ARGV[1].nil?
   raise "ARGS ERROR: ARGV[0]->input_HTML_base ARGV[1]->output_HTML"
 end
 
@@ -137,4 +150,3 @@ open(ARGV[0]) do |input_file|
     end
   end
 end
-
