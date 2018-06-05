@@ -7,7 +7,7 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-ruby src/txt2html.rb data/$1 txt/$1
+ruby src/txt2txt.rb data/$1 txt/$1
 
 if [ $? -eq 0 ]; then
   echo "txt/$1.txtを正常に作成完了しました。"
