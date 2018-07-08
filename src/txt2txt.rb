@@ -3,7 +3,7 @@ class GenkoString < String
   COLUMN = 24
 
   def initialize(line)
-    if line[0] != "・" and line[0] != "（"
+    if line[0] != "・" and line[0] != "（" and line[0] != "１" and line[0] != "２" and line[0] != "３"
       line = "　" + line
     end
     super
